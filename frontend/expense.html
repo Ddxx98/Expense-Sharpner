@@ -1,25 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Expense Tracker</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="expense.css">
 </head>
-
 <body>
-
     <div class="container">
+        <!-- Premium Section -->
         <div class="premium-section">
-            <div class="premium-section" id="premiumSection" style="display: none;">
+            <div id="premiumSection" style="display: none;">
                 <button class="btn premium-btn" id="rzp-button1">Buy Premium</button>
             </div>
             <div id="premiumInfo" style="display: none;" class="premium-info">
                 <p id="premiumStatus" style="color: green; font-weight: bold;">You are a Premium User!</p>
                 <button class="btn" id="showLeaderboard">Show Leaderboard</button>
+                <button id="downloadReport" class="btn">Download Expenses Report</button>
             </div>
         </div>
+
+        <!-- Expense Form Section -->
         <section class="form-section">
             <h1>Add Expense</h1>
             <form id="expenseForm" class="form">
@@ -45,6 +46,7 @@
             </form>
         </section>
 
+        <!-- Expense List Section -->
         <section class="expense-list">
             <h1>All Expenses</h1>
             <table id="expenseTable">
@@ -56,13 +58,12 @@
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody>
-
-                </tbody>
+                <tbody></tbody>
             </table>
         </section>
 
-        <div id="leaderboardModal" class="modal" style="display: none;">
+        <!-- Leaderboard Modal -->
+        <div id="leaderboardModal">
             <div class="modal-content">
                 <span class="close" id="closeModal">&times;</span>
                 <h2>Leaderboard</h2>
@@ -73,15 +74,14 @@
                             <th>Total Expense</th>
                         </tr>
                     </thead>
-                    <tbody id="leaderboardTable">
-                        
-                    </tbody>
+                    <tbody id="leaderboardTable"></tbody>
                 </table>
             </div>
+        </div>
     </div>
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <script src="expense.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.8/axios.min.js" referrerpolicy="no-referrer"></script>
-</body>
 
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.8/axios.min.js" referrerpolicy="no-referrer"></script>
+    <script src="expense.js"></script>
+</body>
 </html>
