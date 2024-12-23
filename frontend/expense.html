@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="premium-section">
+            <div class="premium-section" id="premiumSection" style="display: none;">
+                <button class="btn premium-btn" id="rzp-button1">Buy Premium</button>
+            </div>
+            <div id="premiumInfo" style="display: none;" class="premium-info">
+                <p id="premiumStatus" style="color: green; font-weight: bold;">You are a Premium User!</p>
+                <button class="btn" id="showLeaderboard">Show Leaderboard</button>
+            </div>
+        </div>
+        <section class="form-section">
+            <h1>Add Expense</h1>
+            <form id="expenseForm" class="form">
+                <div class="input-group">
+                    <label for="amount">Amount Spent</label>
+                    <input type="number" id="amount" placeholder="Enter amount" required>
+                </div>
+                <div class="input-group">
+                    <label for="description">Description</label>
+                    <input type="text" id="description" placeholder="Enter description" required>
+                </div>
+                <div class="input-group">
+                    <label for="category">Category</label>
+                    <select id="category" required>
+                        <option value="">Select Category</option>
+                        <option value="Food">Food</option>
+                        <option value="Petrol">Petrol</option>
+                        <option value="Salary">Salary</option>
+                        <option value="Entertainment">Entertainment</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn">Add Expense</button>
+            </form>
+        </section>
+
+        <section class="expense-list">
+            <h1>All Expenses</h1>
+            <table id="expenseTable">
+                <thead>
+                    <tr>
+                        <th>Amount</th>
+                        <th>Description</th>
+                        <th>Category</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </section>
+
+        <div id="leaderboardModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" id="closeModal">&times;</span>
+                <h2>Leaderboard</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Total Expense</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardTable">
+                        
+                    </tbody>
+                </table>
+            </div>
+    </div>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="expense.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.8/axios.min.js" referrerpolicy="no-referrer"></script>
+</body>
+
+</html>
