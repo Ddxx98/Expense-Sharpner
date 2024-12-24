@@ -1,9 +1,11 @@
 const sequelize = require('../util/database');
-const aws = require('aws-sdk');
 require('dotenv').config();
+const S3service = require('../services/S3services');
 
 const Expense = require('../models/expense');
 const User = require('../models/user');
+const Download = require('../models/downloadedFiles');
+
 
 exports.createExpense = async (req, res) => {
     const { description, category, amount } = req.body;
@@ -42,11 +44,6 @@ exports.getExpenses = (req, res) => {
 
 exports.deleteExpense = (req, res) => {
     const id = req.params.id;
-    // Expense.destroy({ where: { id } }).then(result => {
-    //     return res.status(200).json({ message: "Expense deleted" });
-    // }).catch(err => {
-    //     return res.status(500).json(err);
-    // });
     try{
         Expense.findOne({ where: { id } }).then(expense => {
             User.findOne({ where: { id: req.user.id } }).then(user => {
@@ -63,34 +60,25 @@ exports.deleteExpense = (req, res) => {
 
 exports.downloadExpenses = async (req, res) => {
     try{
-        const expenses = await req.user.getExpenses();
+        const expenses = await Expense.findAll({where:{userId:req.user.id}})
         const stringfyExpenses = JSON.stringify(expenses);
-        const filename = 'expenses.json';
-        const fileUrl = uploadtoS3(stringfyExpenses, filename);
+        const filename = `expenses${req.user.id}/${new Date()}.txt`;
+        const fileUrl = await S3service.uploadtoS3(stringfyExpenses, filename, process.env.AWS_BUCKET_NAME);
+        console.log(fileUrl);
         if(!fileUrl){
             return res.status(500).json({ message: 'Failed to upload file' });
         }
+        await Download.create({ url: fileUrl, userId: req.user.id });
         res.status(200).json({ message: 'Downloaded', fileUrl });
     } catch(err){
         res.status(500).json(err);
     }
 }
 
-function uploadtoS3(data, filename){
-    const s3 = new aws.S3({
-        accessKeyId: process.env.AWS_ACCESS_KEY,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
-    });
-    const params = {
-        Bucket: process.env.AWS_BUCKET_NAME,
-        Key: filename,
-        Body: data
-    };
-    s3.upload(params, (err, data) => {
-        if(err){
-            console.log(err);
-            return 
-        }
-        return data.Location;
-    });
+exports.getDownloadedFiles = (req, res) => {
+    Download.findAll({where:{userId:req.user.id}}).then(result => {
+        return res.status(200).json(result);
+    }).catch(err => {
+        return res.status(500).json(err);
+    }); 
 }

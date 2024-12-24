@@ -13,6 +13,7 @@ const User = require('./models/user');
 const Expense = require('./models/expense');
 const Order = require('./models/order');
 const Requests = require('./models/requests');
+const Download = require('./models/downloadedFiles');
 
 const app = express();
 
@@ -34,6 +35,9 @@ Order.belongsTo(User);
 
 User.hasMany(Requests);
 Requests.belongsTo(User);
+
+User.hasMany(Download);
+Download.belongsTo(User);
 
 sequelize.sync()
     .then(result => {

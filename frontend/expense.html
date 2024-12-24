@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="container">
-        <!-- Premium Section -->
+        
         <div class="premium-section">
             <div id="premiumSection" style="display: none;">
                 <button class="btn premium-btn" id="rzp-button1">Buy Premium</button>
@@ -20,7 +20,6 @@
             </div>
         </div>
 
-        <!-- Expense Form Section -->
         <section class="form-section">
             <h1>Add Expense</h1>
             <form id="expenseForm" class="form">
@@ -46,7 +45,6 @@
             </form>
         </section>
 
-        <!-- Expense List Section -->
         <section class="expense-list">
             <h1>All Expenses</h1>
             <table id="expenseTable">
@@ -60,9 +58,11 @@
                 </thead>
                 <tbody></tbody>
             </table>
+            <div class="pagination" id="pagination">
+                
+            </div>
         </section>
 
-        <!-- Leaderboard Modal -->
         <div id="leaderboardModal">
             <div class="modal-content">
                 <span class="close" id="closeModal">&times;</span>
@@ -78,6 +78,12 @@
                 </table>
             </div>
         </div>
+        <section class="report-section">
+            <h1>Downloaded Reports</h1>
+            <ul id="reportList">
+                
+            </ul>
+        </section>
     </div>
 
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>

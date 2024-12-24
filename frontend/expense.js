@@ -1,39 +1,52 @@
 const expenseForm = document.getElementById("expenseForm");
 const expenseTableBody = document.getElementById("expenseTable").querySelector("tbody");
+const paginationContainer = document.getElementById("pagination");
 const token = window.localStorage.getItem("token");
 const downloadReportButton = document.getElementById("downloadReport");
 
-function addExpenseRow(expense, index) {
+let currentPage = 1;
+const expensesPerPage = 4;
+
+function addExpenseRow(expense) {
     const row = document.createElement("tr");
     row.innerHTML = `
-    <td>${expense.amount}</td>
-    <td>${expense.description}</td>
-    <td>${expense.category}</td>
-    <td><button class="delete-btn" data-index="${expense.id}">Delete</button></td>
-  `;
+        <td>${expense.amount}</td>
+        <td>${expense.description}</td>
+        <td>${expense.category}</td>
+        <td><button class="delete-btn" data-id="${expense.id}">Delete</button></td>
+    `;
     expenseTableBody.appendChild(row);
 }
 
-async function loadExpenses() {
-    await axios.get(`http://localhost:3000/expense`, { headers: { Authorization: token } })
-        .then((res) => {
-            const expenses = res.data;
-            expenseTableBody.innerHTML = "";
-            if (expenses.length === 0) {
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                <td colspan="4">No expenses found</td>
-              `;
-                expenseTableBody.appendChild(row);
-                return;
-            } else {
-                expenses.forEach((expense, index) => {
-                    addExpenseRow(expense, index);
-                });
-            }
-        }).catch((err) => {
-            console.log(err);
+function renderPagination(totalPages, currentPage) {
+    paginationContainer.innerHTML = "";
+
+    for (let i = 1; i <= totalPages; i++) {
+        const button = document.createElement("button");
+        button.textContent = i;
+        button.classList.add("pagination-btn");
+        if (i === currentPage) button.classList.add("active");
+
+        button.addEventListener("click", () => {
+            loadExpenses(i);
         });
+
+        paginationContainer.appendChild(button);
+    }
+}
+
+async function loadExpenses(page = 1) {
+    try{
+        const response = await axios.get(`http://localhost:3000/expense`, { headers: { Authorization: token } });
+        //const { expenses, totalExpenses } = response.data;
+        expenseTableBody.innerHTML = "";
+        response.data.forEach((expense) => {
+            addExpenseRow(expense);
+        });
+        renderPagination(response.data.length/expensesPerPage, page);
+    } catch (error) {
+        console.error("Failed to fetch expenses:", error);
+    }
 }
 
 expenseForm.addEventListener("submit", async function (e) {
@@ -107,6 +120,7 @@ rzpButton.addEventListener('click', async function (e) {
 
 window.addEventListener("DOMContentLoaded", (e) => {
     loadExpenses();
+    fetchDownloadedReports();
     const premiumSection = document.getElementById("premiumSection");
     const premiumStatus = document.getElementById("premiumInfo");
     const status = window.localStorage.getItem("status");
@@ -152,35 +166,45 @@ closeModal.addEventListener("click", () => {
     leaderboardModal.style.display = "none";
 });
 
-downloadReportButton.addEventListener("click", () => {
-    downloadReport();
+downloadReportButton.addEventListener("click",async () => {
+    await downloadReport();
+    await fetchDownloadedReports();
 });
 
 async function downloadReport() {
     await axios.get("http://localhost:3000/expense/download", { headers: { Authorization: token } })
         .then((res) => {
-            const expenses = res.data;
-            const csvData = generateCSV(expenses);
-            downloadCSV(csvData);
+            const link = res.data.fileUrl;
+            window.open(link, "_blank");
         }).catch((err) => {
             console.log(err);
         });
 }
 
-function generateCSV(data) {
-    const header = ['Amount', 'Description', 'Category'];
-    const rows = data.map(expense => [expense.amount, expense.description, expense.category]);
-    const csv = [header.join(','), ...rows.map(row => row.join(','))].join('\n');
-    return csv;
-}
+async function fetchDownloadedReports() {
+    try {
+        const response = await axios.get("http://localhost:3000/expense/downloaded", {
+            headers: { Authorization: token },
+        });
+        const reports = response.data;
+        const reportList = document.getElementById("reportList");
+        reportList.innerHTML = "";
 
-function downloadCSV(csvData) {
-    const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement("a");
-    const url = URL.createObjectURL(blob);
-    link.setAttribute("href", url);
-    link.setAttribute("download", "expense_report.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+        if (reports.length === 0) {
+            reportList.innerHTML = `<p style="text-align: center; color: #6c757d;">No reports downloaded yet.</p>`;
+            return;
+        }
+        reports.forEach((report, index) => {
+            const reportItem = document.createElement("div");
+            reportItem.classList.add("report-item");
+            reportItem.innerHTML = `
+            <span>Report ${index + 1} (User ID: ${report.userId})</span>
+            <a href="${report.fileUrl}" target="_blank" download>Download</a>
+        `;
+            reportList.appendChild(reportItem);
+        });
+    } catch (error) {
+        console.error("Failed to fetch downloaded reports:", error);
+        reportList.innerHTML = `<li>Error fetching reports.</li>`;
+    }
 }
