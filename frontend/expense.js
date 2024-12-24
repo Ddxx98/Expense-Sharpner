@@ -1,11 +1,11 @@
 const expenseForm = document.getElementById("expenseForm");
 const expenseTableBody = document.getElementById("expenseTable").querySelector("tbody");
 const paginationContainer = document.getElementById("pagination");
+const itemsPerPageDropdown = document.getElementById("itemsPerPage");
 const token = window.localStorage.getItem("token");
 const downloadReportButton = document.getElementById("downloadReport");
 
 let currentPage = 1;
-const expensesPerPage = 4;
 
 function addExpenseRow(expense) {
     const row = document.createElement("tr");
@@ -35,15 +35,22 @@ function renderPagination(totalPages, currentPage) {
     }
 }
 
-async function loadExpenses(page = 1) {
+itemsPerPageDropdown.addEventListener("change", (e) => {
+    itemsPerPage = parseInt(e.target.value);
+    currentPage = 1;
+    loadExpenses(currentPage, itemsPerPage);
+});
+
+async function loadExpenses(page = 1, limit=5) {
     try{
-        const response = await axios.get(`http://localhost:3000/expense`, { headers: { Authorization: token } });
-        //const { expenses, totalExpenses } = response.data;
-        expenseTableBody.innerHTML = "";
-        response.data.forEach((expense) => {
-            addExpenseRow(expense);
+        const response = await axios.get(`http://localhost:3000/expense?page=${page}&limit=${limit} `, {
+            headers: { Authorization: token },
         });
-        renderPagination(response.data.length/expensesPerPage, page);
+        const { expenses, totalPages } = response.data;
+
+        expenseTableBody.innerHTML = "";
+        expenses.forEach(addExpenseRow);
+        renderPagination(totalPages, page);
     } catch (error) {
         console.error("Failed to fetch expenses:", error);
     }

@@ -47,6 +47,15 @@
 
         <section class="expense-list">
             <h1>All Expenses</h1>
+            <div class="pagination-controls">
+                <label for="itemsPerPage">Items per page:</label>
+                <select id="itemsPerPage">
+                    <option value="5" selected>5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                </select>
+            </div>
             <table id="expenseTable">
                 <thead>
                     <tr>
