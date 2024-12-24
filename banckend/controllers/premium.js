@@ -1,13 +1,14 @@
 const razorpay = require('razorpay');
 const Sequelize = require('sequelize');
+require('dotenv').config();
 
 const Order = require('../models/order');
 const User = require('../models/user');
 const Expense = require('../models/expense');
 
 const instance = new razorpay({
-    key_id: 'rzp_test_LMHe9EIi6NCC7j',
-    key_secret: 'oIQI8UQFfq8eEqBPKB6IJSqF'
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET
 });
 
 exports.createPremium = (req, res) => {
@@ -22,7 +23,7 @@ exports.createPremium = (req, res) => {
             return res.status(500).json(err);
         }
         Order.create({ orderId: order.id, status: "Pending", userId: req.user.id }).then(result => {
-            return res.status(200).json({ order, key_id: 'rzp_test_LMHe9EIi6NCC7j' });
+            return res.status(200).json({ order, key_id: process.env.RAZORPAY_KEY_ID });
         }).catch(err => {
             return res.status(500).json(err);
         });

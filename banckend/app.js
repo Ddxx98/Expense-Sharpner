@@ -1,6 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors')
+const fs = require('fs');
+const path = require('path');
+const helmet = require('helmet');
+const morgan = require('morgan');
 
 const sequelize = require('./util/database')
 const signupRoutes = require('./routes/signup');
@@ -17,9 +21,13 @@ const Download = require('./models/downloadedFiles');
 
 const app = express();
 
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
+
 app.use(cors())
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(helmet());
+app.use(morgan('combined',{stream: accessLogStream}));
 
 app.use('/signup', signupRoutes)
 app.use('/login', loginRoutes)
@@ -41,7 +49,7 @@ Download.belongsTo(User);
 
 sequelize.sync()
     .then(result => {
-        app.listen(3000, () => {
+        app.listen(process.env.PORT || 3000, () => {
             //console.log(result)
             console.log("Server running in 3000")
         });
