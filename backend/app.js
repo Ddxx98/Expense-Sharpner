@@ -29,6 +29,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(helmet());
 app.use(morgan('combined',{stream: accessLogStream}));
 
+app.use((req, res) => {
+    const url = req.url;
+    res.sendFile(path.join(__dirname, `views/frontend/${url}`));
+});
+
 app.use('/signup', signupRoutes)
 app.use('/login', loginRoutes)
 app.use('/expense' , expenseRoutes)

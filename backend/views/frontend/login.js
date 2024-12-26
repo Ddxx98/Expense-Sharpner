@@ -46,12 +46,12 @@ async function validateLoginForm(e) {
         password: password.value
     };
     if (isValid) {
-        await axios.post("http://localhost:3000/login", obj)
+        await axios.post("http://16.171.224.52:3000/login", obj)
             .then((res) => {
                 console.log(res.data);
                 window.localStorage.setItem("status", res.data.isPremium);
                 window.localStorage.setItem("token", res.data.token);
-                window.location.href = "../frontend/expense.html";
+                window.location.href = "expense.html";
             })
             .catch((err) => {
                 if (err.response.status === 404) {
@@ -83,7 +83,7 @@ closeForgotPassword.addEventListener('click', () => {
 document.getElementById('reset-password-form').addEventListener('submit', (e) => {
     e.preventDefault();
     const email = document.getElementById('reset-email').value;
-    axios.post('http://localhost:3000/password/forgot', { email })
+    axios.post('http://16.171.224.52:3000/password/forgot', { email })
         .then((res) => {
             console.log(res.data);
             forgotPasswordBox.classList.add('hidden');
