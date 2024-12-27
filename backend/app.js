@@ -28,10 +28,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(helmet());
 app.use(morgan('combined',{stream: accessLogStream}));
+app.use(express.static(path.join(__dirname, "views/frontend")));
 
 app.use((req, res) => {
     const url = req.url;
-    res.sendFile(path.join(__dirname, `views/frontend/${url}`));
+    console.log(url)
+    res.sendFile(path.join(__dirname, `${url}`));
 });
 
 app.use('/signup', signupRoutes)

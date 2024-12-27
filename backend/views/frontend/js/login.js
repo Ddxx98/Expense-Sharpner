@@ -51,9 +51,10 @@ async function validateLoginForm(e) {
                 console.log(res.data);
                 window.localStorage.setItem("status", res.data.isPremium);
                 window.localStorage.setItem("token", res.data.token);
-                window.location.href = "expense.html";
+                window.location.href = "./expense.html";
             })
             .catch((err) => {
+                console.log(err)
                 if (err.response.status === 404) {
                     showError(email, "User not found.");
                 } else if (err.response.status === 401) {
