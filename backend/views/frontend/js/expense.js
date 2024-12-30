@@ -43,7 +43,7 @@ itemsPerPageDropdown.addEventListener("change", (e) => {
 
 async function loadExpenses(page = 1, limit=5) {
     try{
-        const response = await axios.get(`http://16.171.224.52:3000/expense?page=${page}&limit=${limit} `, {
+        const response = await axios.get(`https://13.60.152.57/expense?page=${page}&limit=${limit} `, {
             headers: { Authorization: token },
         });
         const { expenses, totalPages } = response.data;
@@ -63,7 +63,7 @@ expenseForm.addEventListener("submit", async function (e) {
     const description = document.getElementById("description").value;
     const category = document.getElementById("category").value;
 
-    await axios.post("http://16.171.224.52:3000/expense", { amount, description, category }, { headers: { Authorization: token } })
+    await axios.post("https://13.60.152.57/expense", { amount, description, category }, { headers: { Authorization: token } })
         .then((res) => {
             console.log(res.data);
         })
@@ -78,7 +78,7 @@ expenseTableBody.addEventListener("click", async function (e) {
     if (e.target.classList.contains("delete-btn")) {
         const index = e.target.getAttribute("data-index");
 
-        await axios.delete(`http://16.171.224.52:3000/expense/${index}`, { headers: { Authorization: token } })
+        await axios.delete(`https://13.60.152.57/expense/${index}`, { headers: { Authorization: token } })
             .then((res) => {
                 console.log(res.data);
             })
@@ -93,7 +93,7 @@ expenseTableBody.addEventListener("click", async function (e) {
 const rzpButton = document.getElementById('rzp-button1')
 rzpButton.addEventListener('click', async function (e) {
     e.preventDefault();
-    await axios.post("http://16.171.224.52:3000/premium", {}, { headers: { Authorization: token } })
+    await axios.post("https://13.60.152.57/premium", {}, { headers: { Authorization: token } })
         .then((res) => {
             const options = {
                 key: res.data.key_id,
@@ -103,7 +103,7 @@ rzpButton.addEventListener('click', async function (e) {
                 description: "Upgrade to premium",
                 order_id: res.data.order.id,
                 handler: async function (response) {
-                    await axios.put("http://16.171.224.52:3000/premium", { orderId: response.razorpay_order_id, paymentId: response.razorpay_payment_id, status: "Success" }, { headers: { Authorization: token } })
+                    await axios.put("https://13.60.152.57/premium", { orderId: response.razorpay_order_id, paymentId: response.razorpay_payment_id, status: "Success" }, { headers: { Authorization: token } })
                         .then((res) => {
                             window.localStorage.setItem("status", "true");
                             const premiumStatus = document.getElementById("premiumInfo");
@@ -149,7 +149,7 @@ showLeaderboardButton.addEventListener("click", () => {
 });
 
 async function fetchLeaderboard() {
-    await axios.get("http://16.171.224.52:3000/premium/leaderboard", { headers: { Authorization: token } })
+    await axios.get("https://13.60.152.57/premium/leaderboard", { headers: { Authorization: token } })
         .then((res) => {
             renderLeaderboard(res.data);
         }).catch((err) => {
@@ -179,7 +179,7 @@ downloadReportButton.addEventListener("click",async () => {
 });
 
 async function downloadReport() {
-    await axios.get("http://16.171.224.52:3000/expense/download", { headers: { Authorization: token } })
+    await axios.get("https://13.60.152.57/expense/download", { headers: { Authorization: token } })
         .then((res) => {
             const link = res.data.fileUrl;
             window.open(link, "_blank");
@@ -190,7 +190,7 @@ async function downloadReport() {
 
 async function fetchDownloadedReports() {
     try {
-        const response = await axios.get("http://16.171.224.52:3000/expense/downloaded", {
+        const response = await axios.get("https://13.60.152.57/expense/downloaded", {
             headers: { Authorization: token },
         });
         const reports = response.data;
