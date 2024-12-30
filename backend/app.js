@@ -28,12 +28,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(helmet());
 app.use(morgan('combined',{stream: accessLogStream}));
-app.use(express.static(path.join(__dirname, "views/frontend")));
+app.use(express.static(path.join(__dirname, "views")));
 
-app.get((req, res) => {
-    const url = req.url;
-    res.sendFile(path.join(__dirname, `${url}`));
-});
+// app.get((req, res) => {
+//     const url = req.url;
+//     res.sendFile(path.join(__dirname, `${url}`));
+// });
 app.get("/favicon.ico", (req, res) => res.status(204));
 
 app.use('/signup', signupRoutes)

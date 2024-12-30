@@ -69,7 +69,7 @@ signUpForm.addEventListener("submit", async (e) => {
     password: password.value,
   }
   if (isValid) {
-    await axios.post("https://13.60.152.57/signup", obj)
+    await axios.post("http://localhost:3000/signup", obj)
       .then((res) => {
         console.log(res.data);
         window.location.href = '../frontend/login.html';

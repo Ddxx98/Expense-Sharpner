@@ -46,7 +46,7 @@ async function validateLoginForm(e) {
         password: password.value
     };
     if (isValid) {
-        await axios.post("https://13.60.152.57/login", obj)
+        await axios.post("http://localhost:3000/login", obj)
             .then((res) => {
                 console.log(res.data);
                 window.localStorage.setItem("status", res.data.isPremium);
@@ -84,7 +84,7 @@ closeForgotPassword.addEventListener('click', () => {
 document.getElementById('reset-password-form').addEventListener('submit', (e) => {
     e.preventDefault();
     const email = document.getElementById('reset-email').value;
-    axios.post('https://13.60.152.57/password/forgot', { email })
+    axios.post('http://localhost:3000/password/forgot', { email })
         .then((res) => {
             console.log(res.data);
             forgotPasswordBox.classList.add('hidden');
